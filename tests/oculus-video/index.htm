@@ -12,7 +12,12 @@
 					geometry, material, mesh,
 					riftControls, riftEffect;
 
-				var fov = 90;
+				var video, videoImage, videoImageContext, videoTexture,
+					videoMaterial, videoGeometry, videoScreen;
+
+				var fov = 90,
+					videoWidth = 640,
+					videoHeight = 480;
 
 				if (!vr.isInstalled()) {
 					alert('NPVR plugin not installed!');
@@ -25,6 +30,8 @@
 
 					try {
 						init();
+						getWebcam();
+						animate();
 					} catch (e) {
 						console.log(e);
 					}
@@ -52,7 +59,67 @@
 
 					// Add renderer to document
 					document.body.appendChild(renderer.domElement);
-				};
+				}
+
+				function getWebcam() {
+					navigator.webkitGetUserMedia({video: true, audio: false}, function(stream) {
+						// Create the video element and grab the src from the
+						// webcam stream
+						video = document.createElement('video');
+						video.src = window.URL.createObjectURL(stream);
+						video.play();
+
+						// Create a canvas for the video
+						videoImage = document.createElement('canvas');
+						videoImage.width = videoWidth;
+						videoImage.height = videoHeight;
+
+						// Blank out the canvas if there is no video
+						videoImageContext = videoImage.getContext('2d');
+						videoImageContext.fillStyle = '#000000';
+						videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+						// Create a texture from the video image
+						videoTexture = new THREE.Texture(videoImage);
+						videoTexture.minFilter = THREE.LinearFilter;
+						videoTexture.magFilter = THREE.LinearFilter;
+
+						videoMaterial = new THREE.MeshBasicMaterial({
+							map: videoTexture,
+							overdraw: true,
+							side: THREE.DoubleSide
+						})
+						videoGeometry = new THREE.PlaneGeometry(240, videoHeight * (240 / videoWidth), 4, 4);
+						videoScreen = new THREE.Mesh(videoGeometry, videoMaterial);
+						videoScreen.position.set(0, 50, 0);
+
+						scene.add(videoScreen);
+
+						camera.position.set(0, 150, 300);
+						camera.lookAt(videoScreen.position);
+					});
+				}
+
+				function animate() {
+					requestAnimationFrame(animate);
+					render();
+					update();
+				}
+
+				function update() {
+					// boo
+				}
+
+				function render()  {
+					if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+						videoImageContext.drawImage(video, 0, 0);
+						if (videoTexture) {
+							videoTexture.needsUpdate = true;
+						}
+					}
+
+					renderer.render(scene, camera);
+				}
 			})();
 		</script>
 	</body>
