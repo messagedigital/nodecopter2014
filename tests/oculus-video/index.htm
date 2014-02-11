@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<script src="../../vendor/vr.js"></script>
+		<script src="../../vendor/three.min.js"></script>
+		<script src="../../vendor/vr/effects/OculusRiftEffect.js"></script>
+		<script src="../../vendor/vr/controls/OculusRiftControls.js"></script>
+	</head>
+	<body>
+		<script>
+			(function() {
+				var camera, scene, renderer,
+					geometry, material, mesh,
+					riftControls, riftEffect;
+
+				var fov = 90;
+
+				if (!vr.isInstalled()) {
+					alert('NPVR plugin not installed!');
+				}
+
+				vr.load(function(error) {
+					if (error) {
+						alert('NVPR plugin failed with error: ' + error.toString());
+					}
+
+					try {
+						init();
+					} catch (e) {
+						console.log(e);
+					}
+				});
+
+				function init() {
+					// Create a camera
+					camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 1, 1000);
+
+					// Create a scene
+					scene = new THREE.Scene();
+
+					// Get the oculus rift controls and add them to the scene
+					riftControls = new THREE.OculusRiftControls(camera);
+					scene.add(riftControls.getObject());
+
+					// Create renderer and apply oculus rift effect
+					renderer = new THREE.WebGLRenderer({
+						devicePixelRatio: 1,
+						alpha: false,
+						clearColor: 0xffffff,
+						antialias: true
+					});
+					riftEffect = new THREE.OculusRiftEffect(renderer);
+
+					// Add renderer to document
+					document.body.appendChild(renderer.domElement);
+				};
+			})();
+		</script>
+	</body>
+</head>
