@@ -46,4 +46,6 @@ leapClient.on('data', function(data) {
 			}, 150);
 		}
 	}
+
+	setTimeout(function() { console.log('waiting'); }, 200);
 });
