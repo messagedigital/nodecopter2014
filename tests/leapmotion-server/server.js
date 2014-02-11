@@ -15,14 +15,22 @@ var server  = net.createServer(function(socket) {
 var altitudeChangeThreshold = 10;
 var altitude = null;
 var lastSampledAltitude = null;
+var cleared = true;
 
 Leap.loop({}, function(frame) {
   var hands = frame.hands;
 
   // Look ma, no hands!
   if (hands.length < 1) {
+    // When hand is taken away, write a 0 to re-calibrate the drone. Only once until hand returns.
+    if (!cleared) {
+      write(0);
+      cleared = true;
+    }
     return;
   }
+
+  cleared = false;
 
   // Get the first hand
   var hand = hands[0];
