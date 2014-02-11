@@ -4,13 +4,23 @@
 		<script src="../../vendor/three.min.js"></script>
 		<script src="../../vendor/vr/effects/OculusRiftEffect.js"></script>
 		<script src="../../vendor/vr/controls/OculusRiftControls.js"></script>
+
+		<style>
+			canvas {
+				-webkit-filter: contrast(3) hue-rotate(180deg) saturate(10);
+			}
+		</style>
 	</head>
 	<body>
 		<script>
+			// @see https://github.com/benvanik/vr.js/blob/master/examples/threejs_boxes_demo.html
+			// @see http://stemkoski.github.io/Three.js/Video.html
+
 			(function() {
 				var camera, scene, renderer,
 					geometry, material, mesh,
-					riftControls, riftEffect;
+					riftControls, riftEffect,
+					vrState;
 
 				var video, videoImage, videoImageContext, videoTexture,
 					videoMaterial, videoGeometry, videoScreen;
@@ -30,14 +40,20 @@
 
 					try {
 						init();
-						getWebcam();
 						animate();
 					} catch (e) {
 						console.log(e);
 					}
 				});
 
+				vrState = new vr.State();
+
 				function init() {
+					createRenderer();
+					getWebcam();
+				}
+
+				function createRenderer() {
 					// Create a camera
 					camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 1, 1000);
 
@@ -63,8 +79,7 @@
 
 				function getWebcam() {
 					navigator.webkitGetUserMedia({video: true, audio: false}, function(stream) {
-						// Create the video element and grab the src from the
-						// webcam stream
+						// Create the video element and grab the src from the webcam stream
 						video = document.createElement('video');
 						video.src = window.URL.createObjectURL(stream);
 						video.play();
@@ -84,18 +99,20 @@
 						videoTexture.minFilter = THREE.LinearFilter;
 						videoTexture.magFilter = THREE.LinearFilter;
 
+						// Create a material and geometry and apply them to a mesh
 						videoMaterial = new THREE.MeshBasicMaterial({
 							map: videoTexture,
 							overdraw: true,
-							side: THREE.DoubleSide
+							side: THREE.SingleSide
 						})
 						videoGeometry = new THREE.PlaneGeometry(240, videoHeight * (240 / videoWidth), 4, 4);
 						videoScreen = new THREE.Mesh(videoGeometry, videoMaterial);
-						videoScreen.position.set(0, 50, 0);
+						videoScreen.position.set(0, 0, 0);
 
+						// Add the video screen mesh to the scene and point the camera at it
 						scene.add(videoScreen);
 
-						camera.position.set(0, 150, 300);
+						camera.position.set(0, 0, 100);
 						camera.lookAt(videoScreen.position);
 					});
 				}
@@ -118,7 +135,8 @@
 						}
 					}
 
-					renderer.render(scene, camera);
+					var polled = vr.pollState(vrState);
+					riftEffect.render(scene, camera, polled ? vrState : null);
 				}
 			})();
 		</script>
