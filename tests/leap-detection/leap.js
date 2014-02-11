@@ -10,6 +10,7 @@ var calibrated = false;
 
 leapClient.on('data', function(data) {
 	var input = parseInt(data.toString());
+
 	if (input !== null) {
 		if (!inair) {
 			console.log('inair', inair);
@@ -21,11 +22,18 @@ leapClient.on('data', function(data) {
 		else if (calibrated) {
 			if (input < 0) {
 				var duration	= -(input) * 500;
+				console.log('up');
 				client.down(0.1);
 			}
 			else if (input > 0){
 				var duration	= input * 500;
+				console.log('down');
 				client.up(0.1);
+			}
+			else {
+				console.log('re-calibrating');
+				client.calibrate();
+				console.log('re-calibrated');
 			}
 
 			if (duration > 3000) {
@@ -35,7 +43,7 @@ leapClient.on('data', function(data) {
 			setTimeout(function() {
 				console.log('stopping');
 				client.stop();
-			}, 100);
+			}, 150);
 		}
 	}
 });
