@@ -15,14 +15,13 @@ var server  = net.createServer(function(socket) {
 var altitudeChangeThreshold = 10;
 var altitude = null;
 var lastSampledAltitude = null;
-var cleared = true;
+var cleared = true; // var to ensure re-calibrate command is not duplicated
 
 Leap.loop({}, function(frame) {
   var hands = frame.hands;
 
-  // Look ma, no hands!
-  if (hands.length < 1) {
-    // When hand is taken away, write a 0 to re-calibrate the drone. Only once until hand returns.
+  // If there's no hands or more than 1 hand, stop and re-calibrate
+  if (hands.length <> 1) {
     if (!cleared) {
       write(0);
       cleared = true;
@@ -41,8 +40,9 @@ Leap.loop({}, function(frame) {
   altitude = pos[1];
 });
 
-// Sample the altitude every 100 milliseconds
+// Sample the altitude every 200 milliseconds
 setInterval(function() {
+  // Get the difference in altitude, reverse it so positive is up and use a multiplier to make the number smaller
   var change = -1 * Math.round((lastSampledAltitude - altitude) * 0.05);
 
   if (0 == change) {
