@@ -5,12 +5,33 @@ var leapClient	= net.connect(1337, 'localhost', function() {});
 
 var riftIo = require('socket.io').listen(1339);
 
+var sockets = [];
 
 // Video stream
 var stream = client.getPngStream();
+//	stream.on('data', console.log);
+// var stream2 = client.getVideoStream();
+	//stream2.on('data', console.log);
 
+	stream.on('data', function(frame) {
+		//console.log(frame);
+		sockets.forEach(function(socket) {
+			console.log('EMITTING VIDEO');
+			socket.emit('jelly', {test: 'hello'});
+			socket.emit('jelly', {stuff: frame});
+		});
+	});
+	// stream2.on('data', function(frame) {
+	// 	//console.log(frame);
+	// 	sockets.forEach(function(socket) {
+	// 		socket.emit('video', frame);
+	// 	});
+	// });
 
 riftIo.sockets.on('connection', function (socket) {
+	sockets.push(socket);
+	socket.emit('jelly', {test: 'belly'});
+
 	socket.on('rotation', function (data) {
 		console.log(data);
 		var updown		= Math.round(data.rotation.x * 100)/100;
@@ -35,10 +56,16 @@ riftIo.sockets.on('connection', function (socket) {
 		}
 	});
 
-	// Send PNG data
-	stream.on('data', function(frame) {
-		socket.emit('video', {frame: frame});
-	});
+	// // Send PNG data
+	// stream.on('data', function(frame) {
+	// 	//console.log(frame);
+	// 	console.log(socket);
+	// 	socket.emit('video', frame);
+	// });
+	// stream2.on('data', function(frame) {
+	// 	//console.log(frame);
+	// 	socket.emit('video', frame);
+	// });
 });
 
 var inair		= false;
@@ -107,5 +134,5 @@ leapClient.on('data', function(data) {
 		}
 	}
 
-//	setTimeout(function() { console.log('waiting'); }, 200);
+// //	setTimeout(function() { console.log('waiting'); }, 200);
 });
