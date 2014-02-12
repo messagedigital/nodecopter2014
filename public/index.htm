@@ -16,25 +16,34 @@
 		<script>
 			(function() {
 				var oculus = new Oculus,
-					socket = io.connect('http://192.168.1.3:1339'),
+					socket = io.connect('http://127.0.0.1:1339'),
 					connected = false;
+
+				oculus.detect(function() {
+					// oculus.initVideo();
+					// oculus.getVideoFromWebCam();
+				});
 
 				socket.on('connection', function() {
 					console.log('connected');
 					connected = true;
 				});
 
-				oculus.detect(function() {
-					// oculus.showVideo();
-				});
-
 				oculus.onRotationChange(function(data) {
-					// console.log(data);
-					if (connected) {
+					// if (connected) {
 						socket.emit('rotation', {
 							rotation: data
 						});
-					}
+					// }
+				});
+
+				socket.on('hello', function(d) {
+					console.log('hello', d);
+				});
+
+				socket.on('jelly', function(d) {
+					console.log('jelly', d);
+					// oculus.updateVideoFrame(data);
 				});
 			})();
 		</script>
