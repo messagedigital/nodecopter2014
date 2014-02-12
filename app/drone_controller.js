@@ -4,6 +4,8 @@ var client		= arDrone.createClient();
 var leapClient	= net.connect(1337, 'localhost', function() {});
 
 var riftIo = require('socket.io').listen(1339);
+var ss = require('socket.io-stream');
+var ssstream = ss.createStream();
 
 var sockets = [];
 
@@ -19,6 +21,8 @@ var stream = client.getPngStream();
 			console.log('EMITTING VIDEO');
 			socket.emit('jelly', {test: 'hello'});
 			socket.emit('jelly', {stuff: frame});
+			ss(socket).emit('jelly', ssstream/*, {size: file.size}*/);
+   			ss.createBlobReadStream(frame).pipe(stream);
 		});
 	});
 	// stream2.on('data', function(frame) {
