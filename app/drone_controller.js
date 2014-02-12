@@ -20,13 +20,17 @@ riftIo.sockets.on('connection', function (socket) {
 		console.log('leftright: ' + leftright);
 		console.log('duration: ' + duration);
 
-		if (leftright > 0) {
+		if (leftright > 0.2) {
 			console.log('clockwise');
 			client.clockwise(speed)
 		}
-		else if (leftright < 0) {
+		else if (leftright < 0.2) {
 			console.log('counterClockwise');
 			client.counterClockwise(speed);
+		}
+		else {
+			console.log('stop');
+			client.stop();
 		}
 
 		setTimeout(function() {
