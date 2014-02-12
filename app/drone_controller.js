@@ -1,8 +1,39 @@
-var net = require('net');
+var net			= require('net');
 var arDrone		= require('ar-drone');
 var client		= arDrone.createClient();
 var leapClient	= net.connect(1337, 'localhost', function() {});
-var riftClient	= net.connect(1337, '192.168.1.2', function() {});
+
+var riftIo = require('socket.io').listen(1339);
+
+riftIo.sockets.on('connection', function (socket) {
+	socket.on('rotation', function (data) {
+		console.log(data);
+		var updown		= Math.round(data.rotation.x * 100)/100;
+		var leftright	= Math.round(data.rotation.y * 100)/100;
+		var rotate		= leftright;
+		if (leftright < 0) {
+			rotate	= -(leftright);
+		}
+		var duration	= rotate * 2000;
+		var speed		= 0.5;
+
+		console.log('leftright: ' + leftright);
+		console.log('duration: ' + duration);
+
+		if (leftright > 0) {
+			console.log('clockwise');
+			client.clockwise(speed)
+		}
+		else if (leftright < 0) {
+			console.log('counterClockwise');
+			client.counterClockwise(speed);
+		}
+
+		setTimeout(function() {
+			console.log('setTimeout');
+		}, duration);
+	});
+});
 
 var inair		= false;
 var landing		= false;
@@ -70,33 +101,4 @@ leapClient.on('data', function(data) {
 	}
 
 //	setTimeout(function() { console.log('waiting'); }, 200);
-});
-
-riftClient.on('data', function(data) {
-	console.log(data);
-	var updown		= Math.round(data.x * 100)/100;
-	var leftright	= Math.round(data.y * 100)/100;
-	var rotate		= leftright;
-	if (leftright < 0) {
-		rotate	= -(leftright);
-	}
-	var duration	= rotate * 2000;
-	var speed		= 0.5;
-
-	console.log('leftright: ' + leftright);
-	console.log('duration: ' + duration);
-
-	if (leftright > 0) {
-		console.log('clockwise');
-//		client.clockwise(speed)
-	}
-	else if (leftright < 0) {
-		console.log('counterClockwise');
-//		client.counterClockwise(speed);
-	}
-
-	setTimeout(function() {
-		console.log('setTimeout');
-	}, duration);
-
 });
