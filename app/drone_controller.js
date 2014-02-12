@@ -11,6 +11,7 @@ var calibrated = false;
 leapClient.on('data', function(data) {
 	var input = parseInt(data.toString());
 	var duration	= 500;
+	console.log('data: ' + data);
 	console.log('input: ' + input);
 	if (input !== null) {
 		if (!inair) {
