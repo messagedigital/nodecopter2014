@@ -77,6 +77,10 @@ riftIo.sockets.on('connection', function (socket) {
 			console.log('tilt left');
 			client.left(0.2);
 		}
+		else {
+			console.log('stop-tilt');
+			client.right(0);
+		}
 	});
 
 	// // Send PNG data
