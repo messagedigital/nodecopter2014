@@ -10,21 +10,17 @@ riftIo.sockets.on('connection', function (socket) {
 		console.log(data);
 		var updown		= Math.round(data.rotation.x * 100)/100;
 		var leftright	= Math.round(data.rotation.y * 100)/100;
-		var rotate		= leftright;
-		if (leftright < 0) {
-			rotate	= -(leftright);
-		}
-		var duration	= rotate * 2000;
+		var boundry		= 0.2;
 		var speed		= 0.5;
 
 		console.log('leftright: ' + leftright);
 		console.log('duration: ' + duration);
 
-		if (leftright > 0.2) {
+		if (leftright > boundry) {
 			console.log('clockwise');
 			client.clockwise(speed)
 		}
-		else if (leftright < 0.2) {
+		else if (leftright < -(boundry)) {
 			console.log('counterClockwise');
 			client.counterClockwise(speed);
 		}
@@ -32,10 +28,6 @@ riftIo.sockets.on('connection', function (socket) {
 			console.log('stop');
 			client.stop();
 		}
-
-		setTimeout(function() {
-			console.log('setTimeout');
-		}, duration);
 	});
 });
 
