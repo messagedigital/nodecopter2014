@@ -53,6 +53,7 @@ leapClient.on('data', function(data) {
 	if (input !== null) {
 		if (!inair) {
 			console.log('inair', inair);
+			client.disableEmergency();
 			client.takeoff();
 			setTimeout(function() {client.calibrate(); setTimeout(function() {calibrated = true;}, 1000); console.log('calibrated'); }, 5000);
 			console.log('calibrated', calibrated);
