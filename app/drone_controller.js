@@ -36,23 +36,23 @@ riftIo.sockets.on('connection', function (socket) {
 		console.log(data);
 		var updown		= Math.round(data.rotation.x * 100)/100;
 		var leftright	= Math.round(data.rotation.y * 100)/100;
-		var boundry		= 0.2;
-		var speed		= 0.5;
+		var boundry		= 0.1;
+		var speed		= 0.8;
 
 		console.log('leftright: ' + leftright);
-		console.log('duration: ' + duration);
+		// console.log('duration: ' + duration);
 
-		if (leftright > boundry) {
+		if (leftright < -boundry) {
 			console.log('clockwise');
-			client.clockwise(speed)
+			client.clockwise(speed);
 		}
-		else if (leftright < -(boundry)) {
+		else if (leftright > boundry) {
 			console.log('counterClockwise');
 			client.counterClockwise(speed);
 		}
 		else {
 			console.log('stop');
-			client.stop();
+			client.clockwise(0);
 		}
 	});
 
