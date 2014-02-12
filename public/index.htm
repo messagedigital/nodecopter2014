@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+	<head>
+		<title>oculus nodecopter controls</title>
+
+		<script src="/vendor/vr.js"></script>
+		<script src="/vendor/three.min.js"></script>
+		<script src="/vendor/vr/effects/OculusRiftEffect.js"></script>
+		<script src="/vendor/vr/controls/OculusRiftControls.js"></script>
+
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script src="/oculus.js"></script>
+		<script src="/filters.js"></script>
+
+		<script>
+			(function() {
+				var oculus = new Oculus,
+					socket = io.connect('http://192.168.1.3:1339'),
+					connected = false;
+
+				socket.on('connection', function() {
+					console.log('connected');
+					connected = true;
+				});
+
+				oculus.detect(function() {
+					// oculus.showVideo();
+				});
+
+				oculus.onRotationChange(function(data) {
+					// console.log(data);
+					if (connected) {
+						socket.emit('rotation', {
+							rotation: data
+						});
+					}
+				});
+			})();
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
