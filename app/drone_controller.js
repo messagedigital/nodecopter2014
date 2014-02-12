@@ -4,6 +4,8 @@ var client		= arDrone.createClient();
 var leapClient	= net.connect(1337, 'localhost', function() {});
 
 var riftIo = require('socket.io').listen(1339);
+var ss = require('socket.io-stream');
+var ssstream = ss.createStream();
 
 var sockets = [];
 
@@ -19,6 +21,8 @@ var stream = client.getPngStream();
 			console.log('EMITTING VIDEO');
 			socket.emit('jelly', {test: 'hello'});
 			socket.emit('jelly', {stuff: frame});
+			ss(socket).emit('jelly', ssstream/*, {size: file.size}*/);
+   			ss.createBlobReadStream(frame).pipe(stream);
 		});
 	});
 	// stream2.on('data', function(frame) {
@@ -51,7 +55,7 @@ riftIo.sockets.on('connection', function (socket) {
 			client.counterClockwise(speed);
 		}
 		else {
-			console.log('stop');
+			console.log('stop-rotation');
 			client.clockwise(0);
 		}
 	});
@@ -77,7 +81,7 @@ leapClient.on('data', function(data) {
 	var duration	= 500;
 	console.log('data: ' + data);
 	console.log('input: ' + input);
-	if (input !== null) {
+	if (data !== null) {
 		if (!inair) {
 			console.log('inair', inair);
 			client.disableEmergency();
@@ -92,10 +96,6 @@ leapClient.on('data', function(data) {
 
 			speed = speed / 20;
 
-			// if (speed > 0.6) {
-			// 	speed = 0.6;
-			// }
-
 			console.log('calculated speed: ' + speed);
 
 			if (speed > 0.5) {
@@ -109,26 +109,25 @@ leapClient.on('data', function(data) {
 
 			if (input > 0) {
 				duration	= input * 100;
-				console.log('up');
+				console.log('up: ' + input);
+				console.log('up-speed: ' + speed)
 				client.up(speed);
 			}
 			else if (input < 0) {
 				duration	= -(input) * 100;
-				console.log('down');
+				console.log('down: ' + input);
+				console.log('down-speed: ' + input);
 				client.down(speed);
 			}
-			else if (input == 'recalibrate') {
+			else if (data == 'recalibrate') {
 				console.log('re-calibrating (not really)');
 				//client.calibrate();
 				//setTimeout(function() {calibrated = true; console.log('re-calibrated');}, 1000);
 			}
 
-			if (duration > 1500) {
-				//duration = 1500;
-			}
 			console.log('duration: ' + duration);
 			setTimeout(function() {
-				console.log('stopping');
+				console.log('stopping (setTimeout)');
 				//client.stop();
 			}, duration);
 		}
