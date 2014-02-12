@@ -77,7 +77,7 @@ leapClient.on('data', function(data) {
 	var duration	= 500;
 	console.log('data: ' + data);
 	console.log('input: ' + input);
-	if (input !== null) {
+	if (data !== null) {
 		if (!inair) {
 			console.log('inair', inair);
 			client.disableEmergency();
@@ -117,7 +117,7 @@ leapClient.on('data', function(data) {
 				console.log('down');
 				client.down(speed);
 			}
-			else if (input == 'recalibrate') {
+			else if (data == 'recalibrate') {
 				console.log('re-calibrating (not really)');
 				//client.calibrate();
 				//setTimeout(function() {calibrated = true; console.log('re-calibrated');}, 1000);
