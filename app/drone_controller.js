@@ -10,9 +10,9 @@ var riftIo = require('socket.io').listen(1339);
 // var ssstream = ss.createStream();
 
 var sockets = [];
-
+/*
 // Video stream
-var stream = client.getVideoStream();
+var stream = client.getPngStream();
 //	stream.on('data', console.log);
 // var stream2 = client.getVideoStream();
 	//stream2.on('data', console.log);
@@ -25,9 +25,8 @@ var stream = client.getVideoStream();
 		//console.log(frame);
 		sockets.forEach(function(socket) {
 			console.log('EMITTING VIDEO');
-			socket.emit('jelly', {test: 'hello'});
-			socket.emit('jelly', {stuff: frame});
-			// ss(socket).emit('jelly', ssstream/*, {size: file.size}*/);
+			socket.emit('video', {frame: frame});
+			// ss(socket).emit('video', ssstream, {size: file.size});
    			// ss.createBlobReadStream(frame).pipe(stream);
 		});
 	});
@@ -37,10 +36,9 @@ var stream = client.getVideoStream();
 	// 		socket.emit('video', frame);
 	// 	});
 	// });
-
+*/
 riftIo.sockets.on('connection', function (socket) {
 	sockets.push(socket);
-	socket.emit('jelly', {test: 'belly'});
 
 	socket.on('rotation', function (data) {
 		console.log(data);
@@ -48,7 +46,7 @@ riftIo.sockets.on('connection', function (socket) {
 		var leftright	= Math.round(data.rotation.y * 100)/100;
 		var tilt		= Math.round(data.rotation.z * 100)/100;
 
-		var boundry		= 0.2;
+		var boundry		= 0.4;
 		var tiltSwitch	= 0.25;
 		var tiltSpeed	= 0.2;
 		var speed		= 0.8;
@@ -69,18 +67,18 @@ riftIo.sockets.on('connection', function (socket) {
 			client.clockwise(0);
 		}
 
-		if (tilt > tiltSwitch) {
+		/*if (tilt > tiltSwitch) {
 			console.log('tilt right');
-			client.right(0.2);
+			client.right(0.1);
 		}
 		else if (tilt < -tiltSwitch) {
 			console.log('tilt left');
-			client.left(0.2);
+			client.left(0.1);
 		}
 		else {
 			console.log('stop-tilt');
 			client.right(0);
-		}
+		}*/
 	});
 
 	// // Send PNG data

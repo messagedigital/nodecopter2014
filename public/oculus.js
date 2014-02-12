@@ -80,10 +80,12 @@ Oculus = (function() {
 	}
 
 	Oculus.prototype.updateVideoFrame = function(image) {
-		self.videoImageSource = image;
+		this.videoImageSource = image;
 	};
 
 	Oculus.prototype.getVideoFromWebCam = function() {
+		var self = this;
+
 		navigator.webkitGetUserMedia({video: true, audio: false}, function(stream) {
 			// Create the video element and grab the src from the webcam stream
 			video = document.createElement('video');
@@ -175,9 +177,15 @@ Oculus = (function() {
 		}
 
 		function render()  {
+			// console.log(self.videoImageSource);
+
 			if (! self.videoImageSource) return;
 
 			videoImageContext.drawImage(self.videoImageSource, 0, 0);
+
+			// Apply filter
+			var data = Filter.applyFilter(videoImage, videoImageContext, Filter.filters.spycam, videoImage.width, videoImage.height);
+			videoImageContext.putImageData(data, 0, 0);
 
 			if (videoTexture) {
 				videoTexture.needsUpdate = true;

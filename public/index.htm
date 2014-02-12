@@ -20,7 +20,7 @@
 					connected = false;
 
 				oculus.detect(function() {
-					// oculus.initVideo();
+					oculus.initVideo();
 					// oculus.getVideoFromWebCam();
 				});
 
@@ -41,9 +41,14 @@
 					console.log('hello', d);
 				});
 
-				socket.on('jelly', function(d) {
-					console.log('jelly', d);
-					// oculus.updateVideoFrame(data);
+				socket.on('video', function(data) {
+					// console.log('jelly', d);
+					image = Filter.createImageData(640,360);
+					image.data = data.frame;
+					// for (var i=0; i<data.length; i+=4) {
+						// image.data[i] =
+					// }
+					oculus.updateVideoFrame(image);
 				});
 			})();
 		</script>
