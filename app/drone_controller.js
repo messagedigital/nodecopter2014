@@ -51,7 +51,7 @@ riftIo.sockets.on('connection', function (socket) {
 			client.counterClockwise(speed);
 		}
 		else {
-			console.log('stop');
+			console.log('stop-rotation');
 			client.clockwise(0);
 		}
 	});
@@ -123,7 +123,7 @@ leapClient.on('data', function(data) {
 
 			console.log('duration: ' + duration);
 			setTimeout(function() {
-				console.log('stopping');
+				console.log('stopping (setTimeout)');
 				//client.stop();
 			}, duration);
 		}
