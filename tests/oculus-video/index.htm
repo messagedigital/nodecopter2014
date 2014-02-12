@@ -93,12 +93,12 @@
 					og += ((og - 127) * 2);
 					ob += ((ob - 127) * 2);
 
-					// Wrap to 0->255
+					// wrap to 0->255
 					or = Math.max(0, Math.min(or, 255));
 					og = Math.max(0, Math.min(og, 255));
 					ob = Math.max(0, Math.min(ob, 255));
 
-					if (i % 10 == 0) {
+					if (i % 40 == 0) {
 						or *= .5;
 						og *= .5;
 						ob *= .5;
