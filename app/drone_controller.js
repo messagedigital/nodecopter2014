@@ -36,7 +36,7 @@ riftIo.sockets.on('connection', function (socket) {
 		console.log(data);
 		var updown		= Math.round(data.rotation.x * 100)/100;
 		var leftright	= Math.round(data.rotation.y * 100)/100;
-		var boundry		= 0.1;
+		var boundry		= 0.2;
 		var speed		= 0.8;
 
 		console.log('leftright: ' + leftright);
