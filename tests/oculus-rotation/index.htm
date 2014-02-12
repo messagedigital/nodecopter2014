@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<script src="../../vendor/vr.js"></script>
+		<script src="../../vendor/three.min.js"></script>
+		<script src="../../vendor/vr/effects/OculusRiftEffect.js"></script>
+		<script src="../../vendor/vr/controls/OculusRiftControls.js"></script>
+
+		<style>
+			canvas {
+				/*-webkit-filter: contrast(3) hue-rotate(180deg) saturate(10);*/
+			}
+		</style>
+	</head>
+	<body>
+		<div id="status">status</div>
+		<script>
+			// @see https://github.com/benvanik/vr.js/blob/master/examples/threejs_boxes_demo.html
+			// @see http://stemkoski.github.io/Three.js/Video.html
+			(function() {
+				var state;
+
+				var statusEl = document.getElementById('status');
+
+				if (!vr.isInstalled()) {
+					alert('NPVR plugin not installed!');
+				}
+
+				vr.load(function(error) {
+					if (error) {
+						alert('NVPR plugin failed with error: ' + error.toString());
+					}
+
+					try {
+						init();
+					} catch (e) {
+						console.log(e);
+					}
+				});
+
+				function init() {
+					state = new vr.State();
+					vr.requestAnimationFrame(tick);
+				}
+
+				function tick() {
+					vr.requestAnimationFrame(tick);
+
+					if (! vr.pollState(state)) {
+						statusEl.innerHTML = 'NPVR plugin not found / error polling';
+						return;
+					}
+
+					if (state.hmd.present) {
+						var status = ''
+						status += 'x : ' + state.hmd.rotation[0] + '<br>';
+						status += 'y: ' + state.hmd.rotation[1] + '<br>';
+						status += 'z: ' + state.hmd.rotation[2] + '<br>';
+
+						statusEl.innerHTML = status
+					} else {
+						statusEl.innerHTML = 'Oculus Rift not present';
+					}
+				}
+			})();
+		</script>
+	</body>
+</head>
