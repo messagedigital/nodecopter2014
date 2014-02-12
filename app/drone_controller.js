@@ -1,8 +1,8 @@
 var net = require('net');
 var arDrone		= require('ar-drone');
 var client		= arDrone.createClient();
-var leapClient	= net.connect(1337, '192.168.1.2', function() {
-});
+var leapClient	= net.connect(1337, '192.168.1.2', function() {});
+var riftClient	= net.connect(1337, '192.168.1.2', function() {});
 
 var inair	= false;
 var landing	= false;
@@ -49,4 +49,8 @@ leapClient.on('data', function(data) {
 	}
 
 //	setTimeout(function() { console.log('waiting'); }, 200);
+});
+
+riftClient.on('data', function(data) {
+	
 });
