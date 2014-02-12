@@ -4,9 +4,9 @@ var client		= arDrone.createClient();
 var leapClient	= net.connect(1337, 'localhost', function() {});
 var riftClient	= net.connect(1337, '192.168.1.2', function() {});
 
-var inair	= false;
-var landing	= false;
-var calibrated = false;
+var inair		= false;
+var landing		= false;
+var calibrated	= false;
 
 leapClient.on('data', function(data) {
 	var input = parseInt(data.toString());
@@ -73,5 +73,30 @@ leapClient.on('data', function(data) {
 });
 
 riftClient.on('data', function(data) {
+	console.log(data);
+	var updown		= Math.round(data.x * 100)/100;
+	var leftright	= Math.round(data.y * 100)/100;
+	var rotate		= leftright;
+	if (leftright < 0) {
+		rotate	= -(leftright);
+	}
+	var duration	= rotate * 2000;
+	var speed		= 0.5;
+
+	console.log('leftright: ' + leftright);
+	console.log('duration: ' + duration);
+
+	if (leftright > 0) {
+		console.log('clockwise');
+//		client.clockwise(speed)
+	}
+	else if (leftright < 0) {
+		console.log('counterClockwise');
+//		client.counterClockwise(speed);
+	}
+
+	setTimeout(function() {
+		console.log('setTimeout');
+	}, duration);
 
 });
