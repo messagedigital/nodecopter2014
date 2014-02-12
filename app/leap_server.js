@@ -22,7 +22,8 @@ Leap.loop({}, function(frame) {
   // If there's no hands or more than 1 hand, stop and re-calibrate
   if (hands.length != 1) {
     if (!cleared) {
-      write(0);
+      console.log('recalibrate, hands: ' + hands.length);
+      write('recalibrate');
       cleared = true;
     }
     return;
