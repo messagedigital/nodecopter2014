@@ -1,7 +1,7 @@
 var net = require('net');
 var arDrone		= require('ar-drone');
 var client		= arDrone.createClient();
-var leapClient	= net.connect(1337, '192.168.1.2', function() {});
+var leapClient	= net.connect(1337, '192.168.1.4', function() {});
 var riftClient	= net.connect(1337, '192.168.1.2', function() {});
 
 var inair	= false;
@@ -11,7 +11,7 @@ var calibrated = false;
 leapClient.on('data', function(data) {
 	var input = parseInt(data.toString());
 	var duration	= 500;
-
+	console.log('input: ' + input);
 	if (input !== null) {
 		if (!inair) {
 			console.log('inair', inair);
@@ -22,29 +22,29 @@ leapClient.on('data', function(data) {
 		}
 		else if (calibrated) {
 			if (input < 0) {
-				duration	= -(input) * 500;
+				duration	= -(input) * 100;
 				console.log('up');
 				client.down(0.1);
 			}
 			else if (input > 0){
-				duration	= input * 500;
+				duration	= input * 100;
 				console.log('down');
 				client.up(0.1);
 			}
 			else {
 				console.log('re-calibrating');
 				client.calibrate();
-				console.log('re-calibrated');
+				setTimeout(function() {calibrated = true; console.log('re-calibrated');}, 1000);
 			}
 
 			if (duration > 3000) {
 				duration = 3000;
 			}
-			console.log(duration);
+			console.log('duration: ' + duration);
 			setTimeout(function() {
 				console.log('stopping');
 				client.stop();
-			}, 150);
+			}, 200);
 		}
 	}
 
@@ -52,5 +52,5 @@ leapClient.on('data', function(data) {
 });
 
 riftClient.on('data', function(data) {
-	
+
 });
