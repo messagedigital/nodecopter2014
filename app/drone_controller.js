@@ -5,6 +5,11 @@ var leapClient	= net.connect(1337, 'localhost', function() {});
 
 var riftIo = require('socket.io').listen(1339);
 
+
+// Video stream
+var stream = client.getPngStream();
+
+
 riftIo.sockets.on('connection', function (socket) {
 	socket.on('rotation', function (data) {
 		console.log(data);
@@ -28,6 +33,11 @@ riftIo.sockets.on('connection', function (socket) {
 			console.log('stop');
 			client.stop();
 		}
+	});
+
+	// Send PNG data
+	stream.on('data', function(frame) {
+		socket.emit('video', {frame: frame});
 	});
 });
 
