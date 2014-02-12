@@ -67,6 +67,10 @@ riftIo.sockets.on('connection', function (socket) {
 			client.clockwise(0);
 		}
 
+		if (updown < -0.5) {
+			client.land();
+		}
+
 		/*if (tilt > tiltSwitch) {
 			console.log('tilt right');
 			client.right(0.1);
