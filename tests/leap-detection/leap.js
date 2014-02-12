@@ -1,7 +1,7 @@
 var net = require('net');
 var arDrone		= require('ar-drone');
 var client		= arDrone.createClient();
-var leapClient = net.connect(1337, '192.168.1.2', function() {
+var leapClient	= net.connect(1337, '192.168.1.2', function() {
 });
 
 var inair	= false;
@@ -10,6 +10,7 @@ var calibrated = false;
 
 leapClient.on('data', function(data) {
 	var input = parseInt(data.toString());
+	var duration	= 500;
 
 	if (input !== null) {
 		if (!inair) {
@@ -21,12 +22,12 @@ leapClient.on('data', function(data) {
 		}
 		else if (calibrated) {
 			if (input < 0) {
-				var duration	= -(input) * 500;
+				duration	= -(input) * 500;
 				console.log('up');
 				client.down(0.1);
 			}
 			else if (input > 0){
-				var duration	= input * 500;
+				duration	= input * 500;
 				console.log('down');
 				client.up(0.1);
 			}
