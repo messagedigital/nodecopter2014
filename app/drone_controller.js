@@ -2,27 +2,33 @@ var net			= require('net');
 var arDrone		= require('ar-drone');
 var client		= arDrone.createClient();
 var leapClient	= net.connect(1337, 'localhost', function() {});
+var Parser      = require('./PaVEParser');
+var parser = new Parser;
 
 var riftIo = require('socket.io').listen(1339);
-var ss = require('socket.io-stream');
-var ssstream = ss.createStream();
+// var ss = require('socket.io-stream');
+// var ssstream = ss.createStream();
 
 var sockets = [];
 
 // Video stream
-var stream = client.getPngStream();
+var stream = client.getVideoStream();
 //	stream.on('data', console.log);
 // var stream2 = client.getVideoStream();
 	//stream2.on('data', console.log);
 
 	stream.on('data', function(frame) {
+		parser.write(frame);
+	});
+
+	parser.on('data', function(frame) {
 		//console.log(frame);
 		sockets.forEach(function(socket) {
 			console.log('EMITTING VIDEO');
 			socket.emit('jelly', {test: 'hello'});
 			socket.emit('jelly', {stuff: frame});
-			ss(socket).emit('jelly', ssstream/*, {size: file.size}*/);
-   			ss.createBlobReadStream(frame).pipe(stream);
+			// ss(socket).emit('jelly', ssstream/*, {size: file.size}*/);
+   			// ss.createBlobReadStream(frame).pipe(stream);
 		});
 	});
 	// stream2.on('data', function(frame) {
