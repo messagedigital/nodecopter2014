@@ -12,10 +12,9 @@ var server  = net.createServer(function(socket) {
   });
 }).listen(port);
 
-var altitudeChangeThreshold = 10;
-var altitude = null;
+var altitude            = null;
 var lastSampledAltitude = null;
-var cleared = true; // var to ensure re-calibrate command is not duplicated
+var cleared             = true; // var to ensure re-calibrate command is not duplicated
 
 Leap.loop({}, function(frame) {
   var hands = frame.hands;
