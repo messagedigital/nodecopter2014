@@ -106,11 +106,13 @@ leapClient.on('data', function(data) {
 			if (input > 0) {
 				duration	= input * 100;
 				console.log('up: ' + input);
+				console.log('up-speed: ' + speed)
 				client.up(speed);
 			}
 			else if (input < 0) {
 				duration	= -(input) * 100;
 				console.log('down: ' + input);
+				console.log('down-speed: ' + input);
 				client.down(speed);
 			}
 			else if (data == 'recalibrate') {
