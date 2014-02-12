@@ -92,10 +92,6 @@ leapClient.on('data', function(data) {
 
 			speed = speed / 20;
 
-			// if (speed > 0.6) {
-			// 	speed = 0.6;
-			// }
-
 			console.log('calculated speed: ' + speed);
 
 			if (speed > 0.5) {
@@ -109,12 +105,12 @@ leapClient.on('data', function(data) {
 
 			if (input > 0) {
 				duration	= input * 100;
-				console.log('up');
+				console.log('up: ' + input);
 				client.up(speed);
 			}
 			else if (input < 0) {
 				duration	= -(input) * 100;
-				console.log('down');
+				console.log('down: ' + input);
 				client.down(speed);
 			}
 			else if (data == 'recalibrate') {
@@ -123,9 +119,6 @@ leapClient.on('data', function(data) {
 				//setTimeout(function() {calibrated = true; console.log('re-calibrated');}, 1000);
 			}
 
-			if (duration > 1500) {
-				//duration = 1500;
-			}
 			console.log('duration: ' + duration);
 			setTimeout(function() {
 				console.log('stopping');
