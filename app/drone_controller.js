@@ -40,7 +40,11 @@ riftIo.sockets.on('connection', function (socket) {
 		console.log(data);
 		var updown		= Math.round(data.rotation.x * 100)/100;
 		var leftright	= Math.round(data.rotation.y * 100)/100;
+		var tilt		= Math.round(data.rotation.z * 100)/100;
+
 		var boundry		= 0.2;
+		var tiltSwitch	= 0.25;
+		var tiltSpeed	= 0.2;
 		var speed		= 0.8;
 
 		console.log('leftright: ' + leftright);
@@ -57,6 +61,15 @@ riftIo.sockets.on('connection', function (socket) {
 		else {
 			console.log('stop-rotation');
 			client.clockwise(0);
+		}
+
+		if (tilt > tiltSwitch) {
+			console.log('tilt right');
+			client.right(0.2);
+		}
+		else if (tilt < -tiltSwitch) {
+			console.log('tilt left');
+			client.left(0.2);
 		}
 	});
 
